@@ -1,6 +1,8 @@
 # Credit-Card-Fraud-Detection
 This is a Python script that analyses the credit card fraud dataset by performing pre-processing, feature selection, and classification using several models. The script first imports the necessary libraries and reads in the dataset using pandas. It then prints the shape and summary statistics of the dataset and checks for any missing values. If any missing values are found, the script prints the name of the column, the number of missing values, the length of the column, and the percentage of missing values.
 
+![alt text](https://github.com/imyaash/Credit-Card-Fraud-Detection/blob/main/PlotsAndImages/1.%20dfShape.png)
+
 Next, the script generates kernel density estimation (KDE) plots, a heatmap of the correlation matrix, box plots, individual box plots for each feature against the class variable, and a pie chart to show the distribution of classes in the dataset. 
 
 The dataset is then split into training and testing sets, and the ratio of non-fraudulent to fraudulent transactions is printed for both sets. The script uses a decision tree classifier for feature selection, and the resulting transformed training and testing sets are stored in trainXSel and testXSel.

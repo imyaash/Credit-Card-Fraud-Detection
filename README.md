@@ -38,6 +38,7 @@ The script uses the Random Forest Classifier (RFC) algorithm to build a predicti
 For FraudDetectionpipeline Scripts:
 
 Introduction:
+
 These scripts are designed to detect fraudulent transactions using a pre-trained machine learning model. The fraudDetectorPipelineCLI.py takes command line arguments to specify the input data file, feature selector model file, classification model file, and the output file. The fraudDetectorPipelineGUI.py opens a graphical user interface (GUI) window to select these files. Both scripts output the predicted classes for each transaction in the input data file, as well as the number of fraudulent transactions detected.
 
 Instructions for fraudDetectorPipelineCLI.py:

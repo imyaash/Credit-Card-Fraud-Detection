@@ -5,6 +5,7 @@ Created on Thu Feb 16 17:37:40 2023
 @author: imyaash-admin
 """
 
+# Import required libraries
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -18,14 +19,19 @@ from sklearn.linear_model import LogisticRegression as LRM
 from sklearn.ensemble import RandomForestClassifier as RFC, AdaBoostClassifier as ABC, GradientBoostingClassifier as GBC
 from sklearn.metrics import make_scorer as ms, f1_score as f1, accuracy_score as acs, balanced_accuracy_score as bas, precision_score as ps, recall_score as rs, roc_auc_score as ras, confusion_matrix as cm, ConfusionMatrixDisplay as CMD, roc_curve as rc
 
+# Read the creditcard.csv file into a pandas dataframe
 df = pd.read_csv("Dataset/creditcard.csv")
 
+# Print the shape of the dataframe and its summary statistics
 df.shape
 des = df.describe()
 print(des)
 print(df.info())
+
+# Check for duplicate rows in the dataframe
 print(df.duplicated().sum())
 
+# Check for missing values in the dataframe and print the percentage of missing values in each column
 if sum(df.isna().sum()) != 0:
     for i in df.columns:
         if df[i].isna().sum() > 0:
@@ -35,30 +41,37 @@ if sum(df.isna().sum()) != 0:
 else:
     print("No NaN in the DataFrame.")
 
+# Plot the kernel density estimate for each column of the dataframe
 for i in df.columns:
     sns.kdeplot(df[i])
     plt.show()
 
+# Plot a heatmap of the correlation matrix of the dataframe
 plt.figure(figsize = (16, 16))
 sns.heatmap(df.corr(), annot = True, cmap = "coolwarm")
 plt.show()
 
+# Plot a boxplot for each column of the dataframe, after dropping the "Time" and "Amount" columns
 plt.figure(figsize = (16, 16))
 df.drop(["Time", "Amount"], axis = 1).boxplot()
 plt.show()
 
+# Plot a boxplot for each column of the dataframe, grouped by the "Class" column
 for i in df.iloc[:, :-1].columns:
     sns.boxplot(df["Class"], df[i])
     plt.show()
 
+# Plot a pie chart showing the proportion of non-fraudulent and fraudulent transactions in the dataframe
 plt.pie(df["Class"].value_counts(), labels = ["Non-Fraudulent", "Fraudulent"], autopct = "%1.1f%%", startangle = 90)
 plt.show()
 
+# Splitting the dataset into independent and dependent variables, and further splitting the independent and dependent variables into training and testing datasets with a 70:30 split ratio
 independent = df.drop("Class", axis = 1)
 dependent = df["Class"]
 
 trainX, testX, trainY, testY = tts(independent, dependent, train_size = 0.7, random_state = 1997)
 
+# Calculating the ratio of non-fraudulent transactions to fraudulent transactions in the training and testing datasets
 trainClassDist = trainY.value_counts()
 trainClassRatio = trainClassDist[0] / trainClassDist[1]
 print("Class Ratio in Train Set")
@@ -68,16 +81,19 @@ testClassRatio = testClassDist[0] / testClassDist[1]
 print("Class Ratio in Test Set")
 print(testClassRatio)
 
+# Selecting features from the training and testing datasets using a decision tree classifier
 featSel = SelectFromModel(DTC(random_state = 1997), prefit = False)
 trainXSel = featSel.fit_transform(trainX, trainY)
 testXSel = featSel.transform(testX)
 
+# Defining a list of models to train and test on the dataset
 models = [LRM(class_weight = "balanced", n_jobs = -1, random_state = 1997),
           # SVC(class_weight = "balanced", random_state = 9999),
           RFC(class_weight = "balanced", n_jobs = -1, random_state = 1997),
           ABC(random_state = 1997),
           GBC(random_state = 1997)]
 
+# Function to train and test the models using cross-validation, and output the mean F1 score and standard deviation for each model
 def crossValModels(models, X, y):
     modelName = []
     f1ScoreMean = []
@@ -94,6 +110,7 @@ def crossValModels(models, X, y):
     print(crossValModelScores)
     return crossValModelScores
 
+# Calling the function to train and test the models and store the results in a pandas dataframe
 crossValScores = crossValModels(models, trainXSel, trainY)
 
 """
@@ -126,6 +143,8 @@ and that the Random Forest classifier can be a particularly effective model for 
 However, it is important to note that the performance of the models may depend on various factors, such as the specific dataset, the features, and the hyperparameters used.
 """
 
+# Optimising hyperparameters for RandomForestClassifier Model using GridSearchCrossValidation
+# Grid Searching for class_weight
 rfc = RFC(n_jobs = -1, verbose = 1, random_state = 1997)
 paramGrid = {
     "class_weight": [{0: 1, 1:550}, {0: 1, 1:560}, {0: 1, 1:570}, {0: 1, 1:580}, {0: 1, 1:590}]
@@ -136,6 +155,7 @@ print(type(rfc).__name__)
 print("Best Parameters: ", gridSearch.best_params_)
 print("Best score: ", gridSearch.best_score_)
 
+# Grid Searching for criterion
 rfc2 = RFC(class_weight = {0:1, 1:550}, n_jobs = -1, verbose = 1, random_state = 1997)
 paramGrid2 = {
     "criterion": ["gini", "entropy", "log_loss"]
@@ -146,6 +166,7 @@ print(type(rfc2).__name__)
 print("Best Parameters: ", gridSearch2.best_params_)
 print("Best score: ", gridSearch2.best_score_)
 
+# Grid Searching for oob_score
 rfc3 = RFC(class_weight = {0:1, 1:550}, criterion = "entropy", n_jobs = -1, verbose = 1, random_state = 1997)
 paramGrid3 = {
     "oob_score": [True, False]
@@ -156,6 +177,7 @@ print(type(rfc3).__name__)
 print("Best Parameters: ", gridSearch3.best_params_)
 print("Best score: ", gridSearch3.best_score_)
 
+# Grid Searching for ccp_alpha
 rfc4 = RFC(class_weight = {0:1, 1:550}, criterion = "entropy", oob_score = True, n_jobs = -1, verbose = 1, random_state = 1997)
 paramGrid4 = {
     "ccp_alpha": np.linspace(0.0, 1.0, 10)
@@ -166,6 +188,7 @@ print(type(rfc4).__name__)
 print("Best Parameters: ", gridSearch4.best_params_)
 print("Best score: ", gridSearch4.best_score_)
 
+# Grid Searching for max_sample
 rfc5 = RFC(class_weight = {0:1, 1:550}, criterion = "entropy", oob_score = True, ccp_alpha = 0.0, n_jobs = -1, verbose = 1, random_state = 1997)
 paramGrid5 = {
     "max_samples": np.linspace(0.0, 1.0, 10)
@@ -176,6 +199,7 @@ print(type(rfc5).__name__)
 print("Best Parameters: ", gridSearch5.best_params_)
 print("Best score: ", gridSearch5.best_score_)
 
+# Grid Searching for n_estimators
 rfc6 = RFC(class_weight = {0:1, 1:550}, criterion = "entropy", oob_score = True, ccp_alpha = 0.0, n_jobs = -1, verbose = 1, random_state = 1997)
 paramGrid6 = {
     "n_estimators": [50, 100, 200, 500, 800, 1000, 1250, 1500, 1750, 2000]
@@ -186,9 +210,12 @@ print(type(rfc6).__name__)
 print("Best Parameters: ", gridSearch6.best_params_)
 print("Best score: ", gridSearch6.best_score_)
 
+# Initialise & fit RandomForestClassifier model using optmial hypermaters as identified by GridSearchCrossValidation
 clf = RFC(n_estimators = 100, criterion = "entropy", oob_score = True, n_jobs = -1, random_state = 1997, verbose = 10, class_weight = {0:1, 1:550}, ccp_alpha = 0.0)
 clf.fit(trainXSel, trainY)
+# Making Perdiction
 pred = clf.predict(testXSel)
+# Computing classification metrics
 accuracy = acs(testY, pred)
 balancedAccuracy = bas(testY, pred)
 precision = ps(testY, pred)
@@ -196,6 +223,7 @@ recall = rs(testY, pred)
 f1Score = f1(testY, pred)
 rocAUC = ras(testY, pred)
 confusion = cm(testY, pred)
+# Printing classification metrics
 print("Accuracy Score: ", accuracy)
 print("Balanced Accuracy Score: ", balancedAccuracy)
 print("Precision Score: ", precision)
@@ -212,9 +240,11 @@ which suggests that the model is doing a good job of balancing the true positive
 The confusion matrix provides a visual representation of the number of true positives, true negatives, false positives, and false negatives for the model's predictions.
 """
 
+# Plotting confusion matrix
 disp = CMD(confusion_matrix = confusion, display_labels = clf.classes_)
 disp.plot()
 
+# Computing and plotting roc_auc
 fpr, tpr, thresholds = rc(testY, clf.predict_proba(testXSel)[:, 1])
 rocauc = ras(testY, clf.predict_proba(testXSel)[:, 1])
 plt.plot(fpr, tpr, label='ROC curve (area = %0.2f)' % rocauc)

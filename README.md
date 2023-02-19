@@ -42,32 +42,32 @@ These scripts are designed to detect fraudulent transactions using a pre-trained
 
 Instructions for fraudDetectorPipelineCLI.py:
 
-    Open a command prompt or terminal window and navigate to the directory where the script is saved.
+Open a command prompt or terminal window and navigate to the directory where the script is saved.
 
-    Run the script with the following command:
+Run the script with the following command:
 
     python fraudDetectorPipelineCLI.py --dataPath [path to input data file] --featureSelectorPath [path to feature selector model file] --clfPath [path to classification model file] --outputPath [path to output file]
 
-    For example:
+For example:
 
     python fraudDetectorPipelineCLI.py --dataPath data.csv --featureSelectorPath featureSelector.pkl --clfPath clfModel.pkl --outputPath output.csv
 
-    The predicted classes for each transaction in the input data file will be saved to the output file, and the number of fraudulent transactions detected will be printed to the console.
+The predicted classes for each transaction in the input data file will be saved to the output file, and the number of fraudulent transactions detected will be printed to the console.
 
 Instructions for fraudDetectorPipelineGUI.py:
 
-    Double-click on the fraudDetectorPipelineGUI.py file
+Double-click on the fraudDetectorPipelineGUI.py file
     
-    Or
+Or
     
-    Open a command prompt or terminal window and navigate to the directory where the script is saved.
+Open a command prompt or terminal window and navigate to the directory where the script is saved.
 
-    Run the script with the following command:
+Run the script with the following command:
 
     python fraudDetectorPipelineGUI.py
 
-    A GUI window will open to select the input data file, feature selector model file, and classification model file.
+A GUI window will open to select the input data file, feature selector model file, and classification model file.
 
-    Select the files using the GUI window and click "Save" to select the output file.
+Select the files using the GUI window and click "Save" to select the output file.
 
-    The predicted classes for each transaction in the input data file will be saved to the output file, and the number of fraudulent transactions detected will be printed to the console.
+The predicted classes for each transaction in the input data file will be saved to the output file, and the number of fraudulent transactions detected will be printed to the console.
